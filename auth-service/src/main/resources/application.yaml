@@ -1,0 +1,23 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: ${datasource-url}
+    username: ${datasource-un}
+    password: ${datasource-pw}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: ${jwt-secret}
+  expiration-ms: 3600000
+
+
+logging:
+  level:
+    org.springframework.security: TRACE
