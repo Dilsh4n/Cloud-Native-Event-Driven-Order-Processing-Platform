@@ -1,13 +1,12 @@
 package com.orderplatform.inventory_service.service;
 
 import com.orderplatform.inventory_service.Exceptions.ProductNotFoundExceptions;
-import com.orderplatform.inventory_service.entity.ProcessedEvents;
+import com.orderplatform.inventory_service.aop.Idempotent;
 import com.orderplatform.inventory_service.entity.Product;
 import com.orderplatform.inventory_service.entity.ReservationStatus;
 import com.orderplatform.inventory_service.entity.StockReservation;
 import com.orderplatform.inventory_service.messaging.ReleaseStockCommand;
 import com.orderplatform.inventory_service.messaging.ReserveStockCommand;
-import com.orderplatform.inventory_service.repo.ProcessedEventRepository;
 import com.orderplatform.inventory_service.repo.ProductRepository;
 import com.orderplatform.inventory_service.repo.StockReservationRepository;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +31,6 @@ public class InventoryService {
 
     private final ProductRepository productRepository;
     private final StockReservationRepository stockReservationRepository;
-    private final ProcessedEventRepository processedEventRepository;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
@@ -40,20 +38,21 @@ public class InventoryService {
     private static final Duration RESERVATION_TTL = Duration.ofMinutes(10);
 
 
+    @Idempotent(key = "#eventID")
     @Transactional
     public void reserveStock(UUID eventID, ReserveStockCommand command){
-        if (processedEventRepository.existsById(eventID)) {
-            log.info("Event {} has already been processed. Skipping.", eventID);
-            return;
-        }
-        log.info("save processed event to the db");
-        try {
-            processedEventRepository.save(new ProcessedEvents(eventID, Instant.now()));
-        } catch (Exception e) {
-            log.warn("Failed to save processed event {}: {}", eventID, e.getMessage());
-            throw new RuntimeException(e);
-        }
-        log.info("processed event save is complete");
+//        if (processedEventRepository.existsById(eventID)) {
+//            log.info("Event {} has already been processed. Skipping.", eventID);
+//            return;
+//        }
+//        log.info("save processed event to the db");
+//        try {
+//            processedEventRepository.save(new ProcessedEvents(eventID, Instant.now()));
+//        } catch (Exception e) {
+//            log.warn("Failed to save processed event {}: {}", eventID, e.getMessage());
+//            throw new RuntimeException(e);
+//        }
+//        log.info("processed event save is complete");
         Product product = productRepository.findById(command.productId()).orElseThrow(
                 () -> new ProductNotFoundExceptions(command.productId())
         );
@@ -89,14 +88,15 @@ public class InventoryService {
 
     }
 
+    @Idempotent(key = "#eventID")
     @Transactional
     public void releaseStock(UUID eventID, ReleaseStockCommand command){
-        if (processedEventRepository.existsById(eventID)) {
-            log.info("Event {} has already been processed. Skipping.", eventID);
-            return;
-        }
-
-        processedEventRepository.save(new ProcessedEvents(eventID, Instant.now()));
+//        if (processedEventRepository.existsById(eventID)) {
+//            log.info("Event {} has already been processed. Skipping.", eventID);
+//            return;
+//        }
+//
+//        processedEventRepository.save(new ProcessedEvents(eventID, Instant.now()));
 
         List<StockReservation> reservation = stockReservationRepository.findByOrderIdAndStatus(
                 command.orderId(),
