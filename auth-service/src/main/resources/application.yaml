@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   application:
@@ -16,6 +16,21 @@ spring:
 jwt:
   secret: ${jwt-secret}
   expiration-ms: 3600000
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0 #trace every request, dial down to 0.1 for 10% of requests, 0.01 for 1% of requests, etc.
+  otlp:
+    tracing:
+      endpoint: http://192.168.204.130:4318/v1/traces
 
 
 logging:
