@@ -31,3 +31,18 @@ security:
   public-paths:
     - /api/v1/auth/register
     - /api/v1/auth/login
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0 #trace every request, dial down to 0.1 for 10% of requests, 0.01 for 1% of requests, etc.
+  otlp:
+    tracing:
+      endpoint: http://192.168.204.130:4318/v1/traces
