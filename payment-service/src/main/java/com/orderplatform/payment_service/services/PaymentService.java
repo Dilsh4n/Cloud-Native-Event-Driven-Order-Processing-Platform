@@ -1,8 +1,8 @@
 package com.orderplatform.payment_service.services;
 
+import com.orderplatform.payment_service.aop.Idempotent;
 import com.orderplatform.payment_service.entity.Payment;
 import com.orderplatform.payment_service.entity.PaymentStatus;
-import com.orderplatform.payment_service.entity.ProcessedEvents;
 import com.orderplatform.payment_service.exceptions.PaymentNotFoundExceptions;
 import com.orderplatform.payment_service.gateway.MockPaymentGateway;
 import com.orderplatform.payment_service.gateway.PaymentGatewayResult;
@@ -29,21 +29,15 @@ import java.util.UUID;
 public class PaymentService {
 
     private final PaymentRepository paymentRepository;
-    private final ProcessedEventRepository processedEventRepository;
     private final MockPaymentGateway mockPaymentGateway;
     private final KafkaTemplate<String, String> kafkaTemplate;
     private final ObjectMapper objectMapper;
 
     private static final String EVENTS_TOPIC = "payment.events";
 
+    @Idempotent(key = "#eventId")
     @Transactional
     public void chargePayment(UUID eventId, ChargePaymentCommand command){
-        if (processedEventRepository.existsById(eventId)){
-            log.info("Event {} already processed, skipping", eventId);
-            return;
-        }
-
-        processedEventRepository.save(new ProcessedEvents(eventId, Instant.now()));
 
         if (paymentRepository.existsByOrderId(command.orderId())){
             log.warn("Payment already exists for order {}, skipping duplicate charge", command.orderId());
@@ -76,14 +70,9 @@ public class PaymentService {
     }
 
 
+    @Idempotent(key = "#eventId")
     @Transactional
     public void refundPayment(UUID eventId, RefundPaymentCommand command){
-        if (processedEventRepository.existsById(eventId)) {
-            log.info("Event {} already processed, skipping", eventId);
-            return;
-        }
-
-        processedEventRepository.save(new ProcessedEvents(eventId, Instant.now()));
 
         Payment payment = paymentRepository.findByOrderId(command.orderId()).orElseThrow(
                 () -> new PaymentNotFoundExceptions(command.orderId())
