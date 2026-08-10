@@ -18,6 +18,15 @@ jwt:
   expiration-ms: 3600000
 
 management:
+  defaults:
+    metrics:
+      export:
+        enabled: false
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
   endpoints:
     web:
       exposure:
@@ -28,11 +37,8 @@ management:
   tracing:
     sampling:
       probability: 1.0 #trace every request, dial down to 0.1 for 10% of requests, 0.01 for 1% of requests, etc.
-  otlp:
+  opentelemetry:
     tracing:
-      endpoint: http://192.168.204.130:4318/v1/traces
-
-
-logging:
-  level:
-    org.springframework.security: TRACE
+      export:
+        otlp:
+          endpoint: http://192.168.204.130:4318/v1/traces
