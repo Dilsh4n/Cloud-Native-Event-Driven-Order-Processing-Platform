@@ -28,16 +28,31 @@ spring:
       observation-enabled: true
 
 management:
+  defaults:
+    metrics:
+      export:
+        enabled: false
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
   endpoints:
     web:
       exposure:
         include: health, prometheus
+
   metrics:
     tags:
       application: ${spring.application.name}
+
   tracing:
     sampling:
       probability: 1.0 #trace every request, dial down to 0.1 for 10% of requests, 0.01 for 1% of requests, etc.
-  otlp:
+
+  opentelemetry:
     tracing:
-      endpoint: http://192.168.204.130:4318/v1/traces
+      export:
+        otlp:
+          endpoint: http://192.168.204.130:4318/v1/traces
