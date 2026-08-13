@@ -30,6 +30,9 @@ public class OutboxMessage {
     @Column(nullable = false)
     private Instant createdAt;
 
+    @Column
+    private String traceparent;
+
     private Instant publishedAt; // null until the relay actually sends it
 
 
