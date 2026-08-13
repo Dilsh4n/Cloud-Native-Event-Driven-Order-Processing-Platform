@@ -1,5 +1,8 @@
 package com.orderplatform.api_gateway.filter;
 
+import io.micrometer.tracing.Span;
+import io.micrometer.tracing.Tracer;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
@@ -12,10 +15,12 @@ import reactor.core.publisher.Mono;
 import java.util.UUID;
 
 @Component
+@RequiredArgsConstructor
 @Slf4j
 public class CorrelationIdGlobalFilter implements GlobalFilter, Ordered {
 
     private static final String CORRELATION_ID_HEADER = "X-Correlation-Id";
+    private final Tracer tracer;
 
 
     @Override
@@ -26,6 +31,11 @@ public class CorrelationIdGlobalFilter implements GlobalFilter, Ordered {
             correlationId = UUID.randomUUID().toString();
         }
         exchange.getAttributes().put("correlationId", correlationId);
+
+        Span currentSpan = tracer.currentSpan();
+        if (currentSpan != null) {
+            currentSpan.tag("correlation.id", correlationId);
+        }
 
         String finalId = correlationId;
         ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
