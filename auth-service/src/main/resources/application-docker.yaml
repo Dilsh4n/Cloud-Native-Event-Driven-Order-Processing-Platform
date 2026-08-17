@@ -1,0 +1,44 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: auth-service
+  datasource:
+    url: jdbc:postgresql://postgres:5432/auth_db
+    username: ${datasource-un}
+    password: ${datasource-pw}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+jwt:
+  secret: ${jwt-secret}
+  expiration-ms: 3600000
+
+management:
+  defaults:
+    metrics:
+      export:
+        enabled: false
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+
+  endpoints:
+    web:
+      exposure:
+        include: health, prometheus
+  metrics:
+    tags:
+      application: ${spring.application.name}
+  tracing:
+    sampling:
+      probability: 1.0 #trace every request, dial down to 0.1 for 10% of requests, 0.01 for 1% of requests, etc.
+  opentelemetry:
+    tracing:
+      export:
+        otlp:
+          endpoint: http://tempo:4318/v1/traces
