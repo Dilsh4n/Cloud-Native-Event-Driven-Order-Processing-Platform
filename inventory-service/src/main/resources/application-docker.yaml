@@ -5,7 +5,7 @@ spring:
   application:
     name: inventory-service
   datasource:
-    url: ${datasource-url}
+    url: jdbc:postgresql://postgres:5432/inventory_db
     username: ${datasource-un}
     password: ${datasource-pw}
   jpa:
@@ -13,7 +13,7 @@ spring:
       ddl-auto: update
     show-sql: true
   kafka:
-    bootstrap-servers: 192.168.204.130:9092
+    bootstrap-servers: kafka:9092
     consumer:
       group-id: inventory-service
       auto-offset-reset: earliest
@@ -55,4 +55,4 @@ management:
     tracing:
       export:
         otlp:
-          endpoint: http://192.168.204.130:4318/v1/traces
+          endpoint: http://tempo:4318/v1/traces
