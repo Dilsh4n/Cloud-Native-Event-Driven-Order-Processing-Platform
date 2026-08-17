@@ -5,9 +5,9 @@ spring:
   application:
     name: inventory-service
   datasource:
-    url: ${datasource-url}
-    username: ${datasource-un}
-    password: ${datasource-pw}
+    url: ${datasource-url:jdbc:postgresql://192.168.204.130:5432/inventory_db}
+    username: ${datasource-un:platform}
+    password: ${datasource-pw:platform}
   jpa:
     hibernate:
       ddl-auto: update
