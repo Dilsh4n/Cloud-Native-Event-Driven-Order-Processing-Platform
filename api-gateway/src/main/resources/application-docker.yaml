@@ -25,7 +25,7 @@ spring:
               predicates:
                 - Path=/api/v1/orders/**
 jwt:
-  secret: ${jwt-secret}
+  secret: ${JWT_SECRET}
 
 security:
   public-paths:
