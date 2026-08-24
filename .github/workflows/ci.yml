@@ -78,8 +78,8 @@ jobs:
         push: false
         tags: |
           ${{ matrix.service }}:pr-${{ github.event.pull_request.number }}
-        cache-from: type=gha
-        cache-to: type=gha,mode=max
+        cache-from: type=gha,scope=${{ matrix.service }}
+        cache-to: type=gha,mode=max,scope=${{ matrix.service }}
 
 
   # ============================================================
@@ -156,8 +156,8 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=gha,scope=${{ matrix.service }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.service }}
 
 # ============================================================
 # 3. MANUAL DEV BUILD
