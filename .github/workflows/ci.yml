@@ -62,6 +62,10 @@ jobs:
 
     - name: Build and test
       working-directory: ${{ matrix.service }}
+      env:
+        JWT_SECRET: ${{ secrets.CI_JWT_SECRET }}
+        SPRING_DATASOURCE_USERNAME: ${{ secrets.CI_DB_USERNAME }}
+        SPRING_DATASOURCE_PASSWORD: ${{ secrets.CI_DB_PASSWORD }}
       run: mvn -B clean verify
 
     - name: Validate Docker image
