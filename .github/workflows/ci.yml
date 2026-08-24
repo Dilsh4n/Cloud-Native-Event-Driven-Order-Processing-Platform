@@ -160,12 +160,12 @@ jobs:
           # Pull previous build cache from GHCR
           cache-from: >-
             type=registry,
-          ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.service }}:buildcache
+            ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.service }}:buildcache
 
           # Store updated build cache in GHCR
           cache-to: >-
             type=registry,
-          ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.service }}:buildcache,mode=max
+            ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.service }}:buildcache,mode=max
 
 
 # ============================================================
@@ -233,9 +233,9 @@ jobs:
           # Pull previous cache from GHCR
           cache-from: >-
             type=registry,
-          ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.service }}:buildcache
+            ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.service }}:buildcache
 
           # Update cache in GHCR
           cache-to: >-
             type=registry,
-          ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.service }}:buildcache,mode=max
+            ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.service }}:buildcache,mode=max
