@@ -5,9 +5,9 @@ spring:
   application:
     name: order-service
   datasource:
-    url: ${datasource-url}
-    username: ${datasource-un}
-    password: ${datasource-pw}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     show-sql: true
     hibernate:
