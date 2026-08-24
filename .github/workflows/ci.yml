@@ -157,10 +157,10 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # Pull previous build cache from GHCR
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.service }}:buildcache
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ matrix.service }}:buildcache
 
           # Store updated build cache in GHCR
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ matrix.service }}:buildcache,mode=max
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ matrix.service }}:buildcache,mode=max
 
 
 # ============================================================
@@ -226,7 +226,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           # Pull previous cache from GHCR
-          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.service }}:buildcache
+          cache-from: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ inputs.service }}:buildcache
 
           # Update cache in GHCR
-          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ github.repository_owner }}/${{ inputs.service }}:buildcache,mode=max
+          cache-to: type=registry,ref=${{ env.REGISTRY }}/${{ env.IMAGE_OWNER }}/${{ inputs.service }}:buildcache,mode=max
