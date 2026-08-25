@@ -171,8 +171,7 @@ jobs:
     name: Manual dev build - ${{ inputs.service }}
 
     if: >
-      github.event_name == 'workflow_dispatch' &&
-      github.ref == 'refs/heads/dev'
+      github.event_name == 'workflow_dispatch'
 
     runs-on: ubuntu-latest
 
