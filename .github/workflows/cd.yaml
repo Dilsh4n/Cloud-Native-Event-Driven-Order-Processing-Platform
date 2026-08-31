@@ -1,0 +1,56 @@
+name: CD
+
+on:
+    workflow_dispatch:
+        inputs:
+            service:
+                description: "Service to deploy"
+                required: true
+                type: choice
+                options:
+                    - auth-service
+                    - api-gateway
+                    - order-service
+                    - inventory-service
+                    - payment-service
+
+            image_tag:
+                description: "Image tag"
+                required: true
+                type: string
+
+jobs:
+    deploy:
+        name: Deploy to Minikube
+
+        runs-on: [self-hosted, linux, minikube]
+
+        steps:
+            - name: Verify Kubernetes
+              run: |
+                  kubectl cluster-info
+                  kubectl get nodes
+
+            - name: Deploy image
+              run: |
+                  kubectl set image \
+                    deployment/${{ inputs.service }} \
+                    ${{ inputs.service }}=ghcr.io/dilsh4n/${{ inputs.service }}:${{ inputs.image_tag }} \
+                    -n order-platform
+
+            - name: Wait for rollout
+              run: |
+                  kubectl rollout status \
+                    deployment/${{ inputs.service }} \
+                    -n order-platform \
+                    --timeout=180s
+
+            - name: Verify deployment
+              run: |
+                  kubectl get deployment \
+                    ${{ inputs.service }} \
+                    -n order-platform
+
+                  kubectl get pods \
+                    -n order-platform \
+                    -l app=${{ inputs.service }}
