@@ -1,0 +1,13 @@
+# Environment / secrets
+.env
+docker/.env
+
+# Database persistent data
+docker/postgres-data/
+
+# Local development data
+docker/redis-data/
+
+# IDE
+.idea/
+.vscode/

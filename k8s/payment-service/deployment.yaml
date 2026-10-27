@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payment-service
+  namespace: order-platform
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: payment-service
+
+  template:
+    metadata:
+      labels:
+        app: payment-service
+
+    spec:
+      containers:
+        - name: payment-service
+          image: ghcr.io/dilsh4n/payment-service:sha-d70f2a3
+
+          ports:
+            - containerPort: 8084
+
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+
+            - name: SPRING_DATASOURCE_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: SPRING_DATASOURCE_USERNAME
+
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: app-secrets
+                  key: SPRING_DATASOURCE_PASSWORD
+
+          imagePullPolicy: Always
